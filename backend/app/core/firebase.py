@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore, storage, auth
 from google.cloud import firestore as firestore_client
 from google.cloud import storage as gcs_client
-from typing import Optional
+from typing import Optional, Dict, Any, List
 import logging
 from .config import get_settings
 
@@ -168,3 +168,57 @@ class FirestoreHelper:
         except Exception as e:
             logger.error(f"Error deleting document {collection}/{document_id}: {str(e)}")
             return False
+
+    @staticmethod
+    def query_documents(
+        collection: str,
+        filters: List[tuple] = None,
+        order_by: List[tuple] = None,
+        limit: int = None,
+        offset: int = None
+    ) -> List[Dict[str, Any]]:
+        """Query documents from Firestore with filters and ordering"""
+        try:
+            db = get_firestore_client()
+            if not db:
+                return []
+
+            # Start with collection reference
+            query = db.collection(collection)
+
+            # Apply filters
+            if filters:
+                for field, operator, value in filters:
+                    query = query.where(field, operator, value)
+
+            # Apply ordering
+            if order_by:
+                for field, direction in order_by:
+                    if direction.lower() == "desc":
+                        query = query.order_by(field, direction=db.DESCENDING)
+                    else:
+                        query = query.order_by(field)
+
+            # Apply offset
+            if offset and offset > 0:
+                query = query.offset(offset)
+
+            # Apply limit
+            if limit:
+                query = query.limit(limit)
+
+            # Execute query
+            docs = query.stream()
+
+            results = []
+            for doc in docs:
+                doc_data = doc.to_dict()
+                doc_data['id'] = doc.id  # Include document ID
+                results.append(doc_data)
+
+            logger.info(f"Queried {len(results)} documents from {collection}")
+            return results
+
+        except Exception as e:
+            logger.error(f"Error querying documents from {collection}: {str(e)}")
+            return []
