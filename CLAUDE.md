@@ -132,3 +132,12 @@ pip freeze > requirements.txt       # Update requirements
 - `backend/requirements.txt` - Python dependencies
 - `backend/app/main.py` - FastAPI application entry point
 - `frontend/App.tsx` - React Native app entry point
+
+
+## Development Phases/Roadmap (High-level)
+Developer: Solo (User, with DevOps & AI experience).
+Timeline: Approximately 8 weeks (flexible, focus on timeboxing).
+Phase 1: Foundation & Setup (~1-2 weeks): GCP/Firebase config (Auth, Firestore, Storage), basic Python backend on Cloud Run, initial User/Profile API endpoints.
+Phase 2: Frontend Core & Backend Integration (~2-3 weeks): RN/Expo setup, basic navigation, Login/Register screens, Profile screen w/ photo upload integration.
+Phase 3: Core Feature Implementation (Try-on) (~2-3 weeks): Prep/load predefined clothes data, implement backend try-on endpoint (calling Gemini, saving results), build frontend browse/select/trigger UI, build frontend result display & saved looks list.
+Phase 4: Testing, Polish & Deployment Prep (~1 week): End-to-end internal testing, bug fixing, usability polish, prepare builds.
