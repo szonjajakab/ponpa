@@ -25,19 +25,19 @@ export const API_ENDPOINTS = {
 
   // Wardrobe endpoints
   WARDROBE: {
-    CLOTHING_ITEMS: '/wardrobe/clothing-items',
-    CLOTHING_ITEM: (id: string) => `/wardrobe/clothing-items/${id}`,
-    CLOTHING_ITEM_IMAGES: (id: string) => `/wardrobe/clothing-items/${id}/images`,
-    CLOTHING_ITEM_WEAR: (id: string) => `/wardrobe/clothing-items/${id}/wear`,
+    CLOTHING_ITEMS: '/api/v1/wardrobe/clothing-items',
+    CLOTHING_ITEM: (id: string) => `/api/v1/wardrobe/clothing-items/${id}`,
+    CLOTHING_ITEM_IMAGES: (id: string) => `/api/v1/wardrobe/clothing-items/${id}/images`,
+    CLOTHING_ITEM_WEAR: (id: string) => `/api/v1/wardrobe/clothing-items/${id}/wear`,
 
-    OUTFITS: '/wardrobe/outfits',
-    OUTFIT: (id: string) => `/wardrobe/outfits/${id}`,
-    OUTFIT_IMAGE: (id: string) => `/wardrobe/outfits/${id}/image`,
-    OUTFIT_WEAR: (id: string) => `/wardrobe/outfits/${id}/wear`,
+    OUTFITS: '/api/v1/wardrobe/outfits',
+    OUTFIT: (id: string) => `/api/v1/wardrobe/outfits/${id}`,
+    OUTFIT_IMAGE: (id: string) => `/api/v1/wardrobe/outfits/${id}/image`,
+    OUTFIT_WEAR: (id: string) => `/api/v1/wardrobe/outfits/${id}/wear`,
 
     ANALYTICS: {
-      CLOTHING_ITEMS: '/wardrobe/analytics/clothing-items',
-      OUTFITS: '/wardrobe/analytics/outfits',
+      CLOTHING_ITEMS: '/api/v1/wardrobe/analytics/clothing-items',
+      OUTFITS: '/api/v1/wardrobe/analytics/outfits',
     },
   },
 

@@ -5,6 +5,10 @@ import { Text, View } from 'react-native';
 import { colors } from '../constants/colors';
 import { dimensions } from '../constants/dimensions';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
+import { WardrobeScreen } from '../screens/wardrobe/WardrobeScreen';
+import { AddItemScreen } from '../screens/wardrobe/AddItemScreen';
+import { EditItemScreen } from '../screens/wardrobe/EditItemScreen';
+import { ItemDetailsScreen } from '../screens/wardrobe/ItemDetailsScreen';
 import { MainStackParamList } from '../types';
 
 const Tab = createBottomTabNavigator();
@@ -18,12 +22,7 @@ const HomeScreen = () => (
   </View>
 );
 
-const WardrobeScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text style={{ fontSize: 24, color: colors.textPrimary }}>Wardrobe</Text>
-    <Text style={{ fontSize: 16, color: colors.textSecondary, marginTop: 8 }}>Coming Soon</Text>
-  </View>
-);
+// Wardrobe will use the imported WardrobeScreen component
 
 const OutfitsScreen = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -136,30 +135,30 @@ export const MainNavigator: React.FC = () => {
         component={TabNavigator}
         options={{ headerShown: false }}
       />
-      {/* Future modal screens will be added here */}
-      {/*
+      {/* Wardrobe Screens */}
       <Stack.Screen
         name="AddItem"
         component={AddItemScreen}
         options={{
-          presentation: 'modal',
-          title: 'Add Item',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="ItemDetails"
         component={ItemDetailsScreen}
         options={{
-          title: 'Item Details',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="EditItem"
         component={EditItemScreen}
         options={{
-          title: 'Edit Item',
+          headerShown: false,
         }}
       />
+      {/* Future screens for outfits, analytics, etc. */}
+      {/*
       <Stack.Screen
         name="CreateOutfit"
         component={CreateOutfitScreen}

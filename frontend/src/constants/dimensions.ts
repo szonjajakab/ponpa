@@ -15,10 +15,12 @@ export const dimensions = {
     lg: 24,
     xl: 32,
     xxl: 48,
+    xxxl: 64,
   },
 
   // Border radius
   borderRadius: {
+    xs: 2,
     none: 0,
     sm: 4,
     md: 8,

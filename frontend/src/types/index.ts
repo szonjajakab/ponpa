@@ -153,3 +153,163 @@ export interface AppSettings {
     publicProfile: boolean;
   };
 }
+
+// Wardrobe types
+export enum ClothingCategory {
+  TOPS = 'tops',
+  BOTTOMS = 'bottoms',
+  DRESSES = 'dresses',
+  OUTERWEAR = 'outerwear',
+  SHOES = 'shoes',
+  ACCESSORIES = 'accessories',
+  UNDERWEAR = 'underwear',
+  ACTIVEWEAR = 'activewear',
+  FORMAL = 'formal',
+  CASUAL = 'casual',
+}
+
+export enum ClothingSize {
+  XS = 'XS',
+  S = 'S',
+  M = 'M',
+  L = 'L',
+  XL = 'XL',
+  XXL = 'XXL',
+  XXXL = 'XXXL',
+  SIZE_0 = '0',
+  SIZE_2 = '2',
+  SIZE_4 = '4',
+  SIZE_6 = '6',
+  SIZE_8 = '8',
+  SIZE_10 = '10',
+  SIZE_12 = '12',
+  SIZE_14 = '14',
+  SIZE_16 = '16',
+  SIZE_18 = '18',
+  SIZE_20 = '20',
+}
+
+export interface Color {
+  name: string;
+  hex_code?: string;
+}
+
+export interface ClothingItem {
+  id: string;
+  user_uid: string;
+  name: string;
+  category: ClothingCategory;
+  brand?: string;
+  size?: ClothingSize;
+  colors: Color[];
+  description?: string;
+  image_urls: string[];
+  purchase_date?: Date;
+  purchase_price?: number;
+  tags: string[];
+  is_favorite: boolean;
+  wear_count: number;
+  last_worn?: Date;
+  condition?: string;
+  notes?: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface ClothingItemCreate {
+  name: string;
+  category: ClothingCategory;
+  brand?: string;
+  size?: ClothingSize;
+  colors: Color[];
+  description?: string;
+  purchase_date?: Date;
+  purchase_price?: number;
+  tags: string[];
+  condition?: string;
+  notes?: string;
+}
+
+export interface ClothingItemUpdate {
+  name?: string;
+  category?: ClothingCategory;
+  brand?: string;
+  size?: ClothingSize;
+  colors?: Color[];
+  description?: string;
+  purchase_date?: Date;
+  purchase_price?: number;
+  tags?: string[];
+  is_favorite?: boolean;
+  condition?: string;
+  notes?: string;
+}
+
+export interface Outfit {
+  id: string;
+  user_uid: string;
+  name: string;
+  description?: string;
+  clothing_item_ids: string[];
+  tags: string[];
+  occasion?: string;
+  season?: string;
+  weather?: string;
+  image_url?: string;
+  is_favorite: boolean;
+  wear_count: number;
+  last_worn?: Date;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface OutfitCreate {
+  name: string;
+  description?: string;
+  clothing_item_ids: string[];
+  tags: string[];
+  occasion?: string;
+  season?: string;
+  weather?: string;
+}
+
+export interface OutfitUpdate {
+  name?: string;
+  description?: string;
+  clothing_item_ids?: string[];
+  tags?: string[];
+  occasion?: string;
+  season?: string;
+  weather?: string;
+  is_favorite?: boolean;
+}
+
+// Filter types
+export interface ClothingItemFilters {
+  category?: ClothingCategory;
+  size?: ClothingSize;
+  brand?: string;
+  is_favorite?: boolean;
+  tags?: string[];
+  search?: string;
+}
+
+export interface ClothingItemSort {
+  field: 'created_at' | 'updated_at' | 'name' | 'wear_count' | 'last_worn';
+  direction: 'asc' | 'desc';
+}
+
+// View types
+export type WardrobeViewMode = 'grid' | 'list';
+
+// Navigation types updates
+export type WardrobeStackParamList = {
+  WardrobeMain: undefined;
+  AddItem: undefined;
+  ItemDetails: { itemId: string };
+  EditItem: { itemId: string };
+  FilterModal: {
+    currentFilters: ClothingItemFilters;
+    onApplyFilters: (filters: ClothingItemFilters) => void;
+  };
+};

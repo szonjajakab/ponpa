@@ -29,7 +29,7 @@ export const ProfileScreen: React.FC = () => {
     reset,
     formState: { errors, isDirty },
   } = useForm<ProfileFormData>({
-    resolver: yupResolver(profileSchemas.updateProfile),
+    resolver: yupResolver(profileSchemas.updateProfile) as any,
     defaultValues: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
@@ -326,7 +326,7 @@ export const ProfileScreen: React.FC = () => {
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.saveButton}
-                  onPress={handleSubmit(handleSave)}
+                  onPress={handleSubmit(handleSave as any)}
                   disabled={isLoading}
                 >
                   <Text style={styles.saveButtonText}>
