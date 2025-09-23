@@ -218,3 +218,13 @@ GoogleService-Info.plist
 *.app
 *.apk
 *.aab
+
+# Keep Podfile and lock
+!/ios/Podfile
+!/ios/Podfile.lock
+
+# Ignore Pods folder
+/ios/Pods/
+
+# Ignore derived builds
+/ios/build/
