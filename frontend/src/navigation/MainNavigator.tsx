@@ -9,6 +9,11 @@ import { WardrobeScreen } from '../screens/wardrobe/WardrobeScreen';
 import { AddItemScreen } from '../screens/wardrobe/AddItemScreen';
 import { EditItemScreen } from '../screens/wardrobe/EditItemScreen';
 import { ItemDetailsScreen } from '../screens/wardrobe/ItemDetailsScreen';
+import { OutfitsScreen } from '../screens/outfits/OutfitsScreen';
+import { CreateOutfitScreen } from '../screens/outfits/CreateOutfitScreen';
+import { EditOutfitScreen } from '../screens/outfits/EditOutfitScreen';
+import { OutfitDetailsScreen } from '../screens/outfits/OutfitDetailsScreen';
+import { OutfitFilterModal } from '../screens/outfits/OutfitFilterModal';
 import { MainStackParamList } from '../types';
 
 const Tab = createBottomTabNavigator();
@@ -24,12 +29,7 @@ const HomeScreen = () => (
 
 // Wardrobe will use the imported WardrobeScreen component
 
-const OutfitsScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text style={{ fontSize: 24, color: colors.textPrimary }}>Outfits</Text>
-    <Text style={{ fontSize: 16, color: colors.textSecondary, marginTop: 8 }}>Coming Soon</Text>
-  </View>
-);
+// OutfitsScreen is now imported from the actual implementation
 
 const AnalyticsScreen = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -157,30 +157,39 @@ export const MainNavigator: React.FC = () => {
           headerShown: false,
         }}
       />
-      {/* Future screens for outfits, analytics, etc. */}
-      {/*
+      {/* Outfit Screens */}
       <Stack.Screen
         name="CreateOutfit"
         component={CreateOutfitScreen}
         options={{
           presentation: 'modal',
-          title: 'Create Outfit',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="OutfitDetails"
         component={OutfitDetailsScreen}
         options={{
-          title: 'Outfit Details',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="EditOutfit"
         component={EditOutfitScreen}
         options={{
-          title: 'Edit Outfit',
+          headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="OutfitFilterModal"
+        component={OutfitFilterModal}
+        options={{
+          presentation: 'modal',
+          headerShown: false,
+        }}
+      />
+      {/* Future screens for analytics, etc. */}
+      {/*
       <Stack.Screen
         name="Analytics"
         component={AnalyticsScreen}

@@ -299,8 +299,75 @@ export interface ClothingItemSort {
   direction: 'asc' | 'desc';
 }
 
+// Outfit filter types
+export interface OutfitFilters {
+  occasion?: string;
+  season?: string;
+  weather?: string;
+  is_favorite?: boolean;
+  tags?: string[];
+  search?: string;
+}
+
+export interface OutfitSort {
+  field: 'created_at' | 'updated_at' | 'name' | 'wear_count' | 'last_worn';
+  direction: 'asc' | 'desc';
+}
+
+// Outfit builder types
+export interface OutfitItemPosition {
+  itemId: string;
+  layer: number; // For visual layering (0 = bottom layer)
+  position?: { x: number; y: number }; // For positioning in preview
+}
+
+export interface OutfitBuilderState {
+  selectedItems: ClothingItem[];
+  previewItems: OutfitItemPosition[];
+  currentStep: 'select' | 'arrange' | 'metadata';
+  metadata: {
+    name?: string;
+    description?: string;
+    occasion?: string;
+    season?: string;
+    weather?: string;
+    tags: string[];
+  };
+}
+
+// Tag types for outfit system
+export type OutfitOccasion =
+  | 'casual'
+  | 'work'
+  | 'formal'
+  | 'party'
+  | 'date'
+  | 'workout'
+  | 'travel'
+  | 'special_event'
+  | 'other';
+
+export type OutfitSeason =
+  | 'spring'
+  | 'summer'
+  | 'fall'
+  | 'winter'
+  | 'all_season';
+
+export type OutfitWeather =
+  | 'sunny'
+  | 'rainy'
+  | 'cloudy'
+  | 'snowy'
+  | 'windy'
+  | 'hot'
+  | 'cold'
+  | 'mild'
+  | 'any';
+
 // View types
 export type WardrobeViewMode = 'grid' | 'list';
+export type OutfitViewMode = 'grid' | 'list';
 
 // Navigation types updates
 export type WardrobeStackParamList = {
@@ -311,5 +378,16 @@ export type WardrobeStackParamList = {
   FilterModal: {
     currentFilters: ClothingItemFilters;
     onApplyFilters: (filters: ClothingItemFilters) => void;
+  };
+};
+
+export type OutfitStackParamList = {
+  OutfitsMain: undefined;
+  CreateOutfit: undefined;
+  OutfitDetails: { outfitId: string };
+  EditOutfit: { outfitId: string };
+  OutfitFilterModal: {
+    currentFilters: OutfitFilters;
+    onApplyFilters: (filters: OutfitFilters) => void;
   };
 };

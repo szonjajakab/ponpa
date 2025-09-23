@@ -21,7 +21,7 @@
     "@tamagui/config": "^1.133.0",
     "@tamagui/core": "^1.133.0",
     "axios": "^1.12.2",
-    "expo": "~54.0.9",
+    "expo": "~54.0.10",
     "expo-dev-client": "~6.0.12",
     "expo-image": "~3.0.8",
     "expo-image-picker": "~17.0.8",

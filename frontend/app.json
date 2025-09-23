@@ -14,13 +14,22 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ponpa"
+      "bundleIdentifier": "com.ponpa",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to your camera to let you take photos of clothing items.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to let you upload clothing photos."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
@@ -29,6 +38,14 @@
     },
     "plugins": [
       "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "This app needs access to your photo library to let you upload clothing photos.",
+          "cameraPermission": "This app needs access to your camera to let you take photos of clothing items.",
+          "microphonePermission": false
+        }
+      ],
       [
         "@react-native-firebase/app",
         {

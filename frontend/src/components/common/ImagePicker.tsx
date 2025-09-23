@@ -23,26 +23,64 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const requestPermissions = async () => {
-    const { status } = await ImagePickerExpo.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
+  const requestMediaLibraryPermission = async () => {
+    try {
+      const permission = await ImagePickerExpo.getMediaLibraryPermissionsAsync();
+      if (permission.granted) {
+        return true;
+      }
+
+      if (permission.canAskAgain) {
+        const { status } = await ImagePickerExpo.requestMediaLibraryPermissionsAsync();
+        if (status === 'granted') {
+          return true;
+        }
+      }
+
       Alert.alert(
-        'Permission Denied',
-        'Please enable photo library access to select images.'
+        'Permission Required',
+        'Please enable photo library access in Settings to select images.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Open Settings', onPress: () => ImagePickerExpo.requestMediaLibraryPermissionsAsync() }
+        ]
       );
       return false;
-    }
-
-    const cameraStatus = await ImagePickerExpo.requestCameraPermissionsAsync();
-    if (cameraStatus.status !== 'granted') {
-      Alert.alert(
-        'Permission Denied',
-        'Please enable camera access to take photos.'
-      );
+    } catch (error) {
+      console.error('Media library permission error:', error);
+      Alert.alert('Error', 'Failed to request photo library permission');
       return false;
     }
+  };
 
-    return true;
+  const requestCameraPermission = async () => {
+    try {
+      const permission = await ImagePickerExpo.getCameraPermissionsAsync();
+      if (permission.granted) {
+        return true;
+      }
+
+      if (permission.canAskAgain) {
+        const { status } = await ImagePickerExpo.requestCameraPermissionsAsync();
+        if (status === 'granted') {
+          return true;
+        }
+      }
+
+      Alert.alert(
+        'Permission Required',
+        'Please enable camera access in Settings to take photos.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Open Settings', onPress: () => ImagePickerExpo.requestCameraPermissionsAsync() }
+        ]
+      );
+      return false;
+    } catch (error) {
+      console.error('Camera permission error:', error);
+      Alert.alert('Error', 'Failed to request camera permission');
+      return false;
+    }
   };
 
   const showImageOptions = () => {
@@ -67,48 +105,62 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
   };
 
   const handleCameraPress = async () => {
-    const hasPermission = await requestPermissions();
+    const hasPermission = await requestCameraPermission();
     if (!hasPermission) return;
 
     try {
       setIsLoading(true);
+      console.log('Launching camera...');
+
       const result = await ImagePickerExpo.launchCameraAsync({
         mediaTypes: ImagePickerExpo.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
+        base64: false,
       });
 
-      if (!result.canceled && result.assets[0]) {
-        onImageSelected(result.assets[0].uri);
+      console.log('Camera result:', { canceled: result.canceled, assetsLength: result.assets?.length });
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        const uri = result.assets[0].uri;
+        console.log('Selected image URI:', uri);
+        onImageSelected(uri);
       }
     } catch (error) {
       console.error('Camera error:', error);
-      Alert.alert('Error', 'Failed to take photo');
+      Alert.alert('Camera Error', `Failed to take photo: ${error.message || error}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGalleryPress = async () => {
-    const hasPermission = await requestPermissions();
+    const hasPermission = await requestMediaLibraryPermission();
     if (!hasPermission) return;
 
     try {
       setIsLoading(true);
+      console.log('Launching photo library...');
+
       const result = await ImagePickerExpo.launchImageLibraryAsync({
         mediaTypes: ImagePickerExpo.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
+        base64: false,
       });
 
-      if (!result.canceled && result.assets[0]) {
-        onImageSelected(result.assets[0].uri);
+      console.log('Gallery result:', { canceled: result.canceled, assetsLength: result.assets?.length });
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        const uri = result.assets[0].uri;
+        console.log('Selected image URI:', uri);
+        onImageSelected(uri);
       }
     } catch (error) {
       console.error('Gallery error:', error);
-      Alert.alert('Error', 'Failed to select image');
+      Alert.alert('Gallery Error', `Failed to select image: ${error.message || error}`);
     } finally {
       setIsLoading(false);
     }
@@ -116,6 +168,9 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
 
   const handlePress = () => {
     if (disabled || isLoading) return;
+
+    // For debugging: try direct photo library access first
+    console.log('ImagePicker pressed, launching options...');
     showImageOptions();
   };
 
