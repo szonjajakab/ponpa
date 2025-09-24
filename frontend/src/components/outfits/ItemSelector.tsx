@@ -334,25 +334,27 @@ const styles = {
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
+    maxHeight: 32,
   },
   categoryTabsContent: {
     paddingHorizontal: dimensions.containerPadding.horizontal,
-    paddingVertical: 6,
+    paddingVertical: 4,
   },
   categoryTab: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginRight: 6,
-    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginRight: 4,
+    borderRadius: 4,
     backgroundColor: colors.gray100,
   },
   selectedCategoryTab: {
     backgroundColor: colors.primary,
   },
   categoryTabText: {
-    fontSize: dimensions.fontSize.sm,
+    fontSize: dimensions.fontSize.xs,
     fontWeight: '500' as const,
     color: colors.textSecondary,
+    lineHeight: 14,
   },
   selectedCategoryTabText: {
     color: colors.white,
