@@ -3,7 +3,6 @@ import io
 import logging
 from typing import Optional, Tuple, Union
 from PIL import Image, ImageOps
-import numpy as np
 
 logger = logging.getLogger(__name__)
 
