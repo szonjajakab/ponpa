@@ -65,7 +65,7 @@ async def get_clothing_item(
     Returns detailed information about a specific clothing item.
     Only the owner can access their clothing items.
     """
-    item = await ClothingItemService.get_clothing_item(item_id, current_user_uid)
+    item = await ClothingItemService.get_clothing_item(current_user_uid, item_id)
     if not item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -111,7 +111,7 @@ async def update_clothing_item(
     Only the owner can update their clothing items.
     """
     try:
-        updated_item = await ClothingItemService.update_clothing_item(item_id, current_user_uid, item_update)
+        updated_item = await ClothingItemService.update_clothing_item(current_user_uid, item_id, item_update)
         if not updated_item:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -141,7 +141,7 @@ async def delete_clothing_item(
     Permanently deletes a clothing item from the user's wardrobe.
     This action cannot be undone. Only the owner can delete their clothing items.
     """
-    success = await ClothingItemService.delete_clothing_item(item_id, current_user_uid)
+    success = await ClothingItemService.delete_clothing_item(current_user_uid, item_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -156,6 +156,7 @@ async def upload_clothing_item_images(
     files: List[UploadFile] = File(...),
     current_user_uid: str = Depends(get_current_user_uid)
 ):
+    logger.info(f"Image upload endpoint hit: item_id={item_id}, files={len(files)}, user={current_user_uid}")
     """
     Upload images for a clothing item
 

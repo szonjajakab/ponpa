@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -112,10 +112,13 @@ export const WardrobeScreen: React.FC<WardrobeScreenProps> = ({ navigation }) =>
     setFilteredItems(filtered);
   }, [items, searchQuery, sort]);
 
-  // Load initial data
+  // Load initial data and refresh when screen focuses
+  const loadItemsRef = useRef(loadItems);
+  loadItemsRef.current = loadItems;
+
   useFocusEffect(
     useCallback(() => {
-      loadItems(0, true);
+      loadItemsRef.current(0, true);
     }, [])
   );
 

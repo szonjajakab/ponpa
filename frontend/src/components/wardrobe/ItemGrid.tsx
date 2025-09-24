@@ -37,7 +37,7 @@ export const ItemGrid: React.FC<ItemGridProps> = ({
   numColumns = 2,
 }) => {
   const renderItem = ({ item }: { item: ClothingItem }) => (
-    <View style={[styles.itemContainer, { width: `${100 / numColumns}%` }]}>
+    <View style={[styles.itemContainer, { flex: 1, maxWidth: `${100 / numColumns}%` }]}>
       <ItemCard
         item={item}
         onPress={onItemPress}
@@ -119,6 +119,7 @@ const styles = {
   },
   itemContainer: {
     paddingHorizontal: dimensions.spacing.xs,
+    marginBottom: dimensions.spacing.md,
   },
   emptyContainer: {
     flex: 1,

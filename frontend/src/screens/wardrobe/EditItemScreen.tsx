@@ -129,7 +129,7 @@ export const EditItemScreen: React.FC<EditItemScreenProps> = ({ navigation, rout
                     text: 'OK',
                     onPress: () => {
                       // Navigate back to wardrobe screen
-                      navigation.navigate('Wardrobe');
+                      navigation.navigate('TabNavigator', { screen: 'Wardrobe' });
                     },
                   },
                 ]

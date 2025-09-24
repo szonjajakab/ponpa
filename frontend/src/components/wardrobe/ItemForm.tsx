@@ -26,7 +26,7 @@ import { dimensions } from '../../constants/dimensions';
 
 interface ItemFormProps {
   initialData?: Partial<ClothingItem>;
-  onSubmit: (data: ClothingItemCreate | ClothingItemUpdate) => void;
+  onSubmit: (data: ClothingItemCreate | ClothingItemUpdate, images?: string[]) => void;
   onCancel: () => void;
   isLoading?: boolean;
   isEditing?: boolean;
@@ -176,7 +176,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
       notes: data.notes || undefined,
     };
 
-    onSubmit(formData);
+    onSubmit(formData, selectedImages);
   };
 
   return (

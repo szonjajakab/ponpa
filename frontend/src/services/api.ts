@@ -163,6 +163,31 @@ class ApiService {
     return response.data.image_urls;
   }
 
+  async uploadClothingItemImagesFromUris(id: string, imageUris: string[]): Promise<string[]> {
+    const formData = new FormData();
+
+    imageUris.forEach((uri, index) => {
+      const filename = `image_${index}.jpg`;
+      formData.append('files', {
+        uri,
+        type: 'image/jpeg',
+        name: filename,
+      } as any);
+    });
+
+    const response: AxiosResponse<{ image_urls: string[] }> = await this.axiosInstance.post(
+      API_ENDPOINTS.WARDROBE.CLOTHING_ITEM_IMAGES(id),
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    return response.data.image_urls;
+  }
+
   async deleteClothingItemImages(id: string, imageUrls: string[]): Promise<void> {
     await this.axiosInstance.delete(API_ENDPOINTS.WARDROBE.CLOTHING_ITEM_IMAGES(id), {
       data: { image_urls: imageUrls },

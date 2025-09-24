@@ -116,7 +116,7 @@ export const ItemDetailsScreen: React.FC<ItemDetailsScreenProps> = ({ navigation
                 [
                   {
                     text: 'OK',
-                    onPress: () => navigation.navigate('Wardrobe'),
+                    onPress: () => navigation.navigate('TabNavigator', { screen: 'Wardrobe' }),
                   },
                 ]
               );

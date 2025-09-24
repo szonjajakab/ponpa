@@ -237,7 +237,6 @@ const styles = {
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    marginBottom: dimensions.spacing.md,
   },
   gridCard: {
     padding: dimensions.spacing.sm,

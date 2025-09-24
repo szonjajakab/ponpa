@@ -52,10 +52,19 @@ def initialize_firebase() -> bool:
         logger.info("Firestore client initialized")
 
         # Initialize Storage client
-        _storage_client = storage.bucket()
         if settings.firebase_storage_bucket:
+            # Remove gs:// prefix if present
+            bucket_name = settings.firebase_storage_bucket
+            if bucket_name.startswith('gs://'):
+                bucket_name = bucket_name[5:]  # Remove 'gs://' prefix
+
+            _storage_client = storage.bucket(bucket_name)
             _storage_bucket = _storage_client
-            logger.info(f"Storage bucket initialized: {settings.firebase_storage_bucket}")
+            logger.info(f"Storage bucket initialized: {bucket_name}")
+        else:
+            _storage_client = storage.bucket()
+            _storage_bucket = _storage_client
+            logger.info("Storage bucket initialized with default bucket")
 
         logger.info("Firebase Admin SDK initialized successfully")
         return True
@@ -195,9 +204,9 @@ class FirestoreHelper:
             if order_by:
                 for field, direction in order_by:
                     if direction.lower() == "desc":
-                        query = query.order_by(field, direction=db.DESCENDING)
+                        query = query.order_by(field, direction=firestore_client.Query.DESCENDING)
                     else:
-                        query = query.order_by(field)
+                        query = query.order_by(field, direction=firestore_client.Query.ASCENDING)
 
             # Apply offset
             if offset and offset > 0:

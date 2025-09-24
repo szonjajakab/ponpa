@@ -417,46 +417,70 @@ class ClothingItemService:
     ) -> List[str]:
         """Upload images for a clothing item"""
         try:
+            logger.info(f"Starting image upload for item {item_id}, user {user_uid}, {len(files)} files")
             # Verify item exists and belongs to user
-            item = await ClothingItemService.get_clothing_item(item_id, user_uid)
+            item = await ClothingItemService.get_clothing_item(user_uid, item_id)
             if not item:
                 raise ValueError("Clothing item not found")
 
             # Validate files
-            for file in files:
+            for i, file in enumerate(files):
+                logger.info(f"Validating file {i}: filename={file.filename}, content_type={file.content_type}, size={file.size}")
+
                 if not file.content_type or not file.content_type.startswith('image/'):
+                    logger.error(f"File {file.filename} validation failed: not an image (content_type={file.content_type})")
                     raise ValueError(f"File {file.filename} is not an image")
 
                 if file.size and file.size > 5 * 1024 * 1024:  # 5MB limit
+                    logger.error(f"File {file.filename} validation failed: too large ({file.size} bytes)")
                     raise ValueError(f"File {file.filename} is too large (max 5MB)")
 
             # Upload files to storage
             bucket = get_storage_bucket()
             if not bucket:
+                logger.error("Storage bucket not available")
                 raise ValueError("Storage bucket not available")
+
+            logger.info(f"Storage bucket available: {bucket.name}")
 
             uploaded_urls = []
 
             for file in files:
-                # Generate unique filename
-                file_extension = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
-                blob_name = f"clothing_items/{user_uid}/{item_id}/{uuid4()}.{file_extension}"
+                logger.info(f"Processing file upload: {file.filename}")
+                try:
+                    # Generate unique filename
+                    file_extension = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+                    blob_name = f"clothing_items/{user_uid}/{item_id}/{uuid4()}.{file_extension}"
+                    logger.info(f"Generated blob name: {blob_name}")
 
-                # Upload to Firebase Storage
-                blob = bucket.blob(blob_name)
-                blob.upload_from_file(file.file, content_type=file.content_type)
-                blob.make_public()
+                    # Read file content
+                    file_content = await file.read()
+                    logger.info(f"Read {len(file_content)} bytes from file")
 
-                uploaded_urls.append(blob.public_url)
+                    # Upload to Firebase Storage
+                    blob = bucket.blob(blob_name)
+                    blob.upload_from_string(file_content, content_type=file.content_type)
+                    blob.make_public()
+
+                    uploaded_urls.append(blob.public_url)
+                    logger.info(f"Successfully uploaded file: {blob.public_url}")
+
+                except Exception as file_error:
+                    logger.error(f"Error uploading file {file.filename}: {str(file_error)}")
+                    raise ValueError(f"Failed to upload file {file.filename}: {str(file_error)}")
 
             # Update clothing item with new image URLs
             doc_data = FirestoreHelper.get_document("clothing_items", item_id)
             if doc_data:
                 clothing_item = ClothingItem.from_firestore(doc_data)
                 if clothing_item:
+                    logger.info(f"Current item has {len(clothing_item.image_urls)} image URLs: {clothing_item.image_urls}")
+
                     # Add new URLs to existing ones
                     current_urls = [str(url) for url in clothing_item.image_urls]
                     all_urls = current_urls + uploaded_urls
+
+                    logger.info(f"Updating item with {len(all_urls)} total URLs: {all_urls}")
 
                     # Validate total count
                     if len(all_urls) > 10:
@@ -466,11 +490,20 @@ class ClothingItemService:
                     clothing_item.image_urls = all_urls
                     clothing_item.update_timestamp()
 
-                    FirestoreHelper.update_document(
+                    firestore_data = clothing_item.to_firestore()
+                    logger.info(f"Firestore data image_urls: {firestore_data.get('image_urls')}")
+
+                    success = FirestoreHelper.update_document(
                         "clothing_items",
                         item_id,
-                        clothing_item.to_firestore()
+                        firestore_data
                     )
+
+                    logger.info(f"Firestore update success: {success}")
+                else:
+                    logger.error("Could not parse clothing item from Firestore data")
+            else:
+                logger.error(f"Could not retrieve clothing item {item_id} from Firestore")
 
             return uploaded_urls
 

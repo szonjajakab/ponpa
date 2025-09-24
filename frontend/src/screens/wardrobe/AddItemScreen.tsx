@@ -19,12 +19,30 @@ interface AddItemScreenProps {
 export const AddItemScreen: React.FC<AddItemScreenProps> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (data: ClothingItemCreate) => {
+  const handleSubmit = async (data: ClothingItemCreate, images?: string[]) => {
     try {
       setIsLoading(true);
 
       // Create the clothing item
       const newItem = await apiService.createClothingItem(data);
+
+      // Upload images if provided
+      if (images && images.length > 0) {
+        console.log('Uploading images for item:', newItem.id, 'Images:', images);
+        try {
+          const uploadedUrls = await apiService.uploadClothingItemImagesFromUris(newItem.id, images);
+          console.log('Images uploaded successfully:', uploadedUrls);
+        } catch (imageError) {
+          console.error('Error uploading images:', imageError);
+          Alert.alert(
+            'Warning',
+            'The item was created successfully, but some images failed to upload. You can add images later from the item details page.',
+            [{ text: 'OK' }]
+          );
+        }
+      } else {
+        console.log('No images to upload');
+      }
 
       Alert.alert(
         'Success',
