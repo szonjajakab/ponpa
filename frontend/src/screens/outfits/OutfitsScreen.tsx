@@ -4,6 +4,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useFocusEffect } from '@react-navigation/native';
 import { OutfitStackParamList, Outfit, ClothingItem, OutfitFilters, OutfitSort, OutfitViewMode } from '../../types';
+import { apiService } from '../../services/api';
 import { OutfitCard } from '../../components/outfits/OutfitCard';
 import { colors } from '../../constants/colors';
 import { dimensions } from '../../constants/dimensions';
@@ -19,78 +20,22 @@ export const OutfitsScreen: React.FC<OutfitsScreenProps> = ({ navigation }) => {
   const [clothingItems, setClothingItems] = useState<ClothingItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [viewMode, setViewMode] = useState<OutfitViewMode>('grid');
+  const [viewMode, setViewMode] = useState<OutfitViewMode>('list');
   const [filters, setFilters] = useState<OutfitFilters>({});
   const [sort, setSort] = useState<OutfitSort>({ field: 'updated_at', direction: 'desc' });
 
-  // Mock data - replace with actual API calls
+  // Load outfits from API
   const loadOutfits = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      // TODO: Replace with actual API call
-      // const response = await outfitService.getOutfits(filters, sort);
+      const [outfitsData, itemsData] = await Promise.all([
+        apiService.getOutfits(),
+        apiService.getClothingItems()
+      ]);
 
-      // Mock data for development
-      const mockOutfits: Outfit[] = [
-        {
-          id: '1',
-          user_uid: 'user1',
-          name: 'Business Casual',
-          description: 'Perfect for office meetings',
-          clothing_item_ids: ['item1', 'item2', 'item3'],
-          tags: ['professional', 'comfortable'],
-          occasion: 'work',
-          season: 'fall',
-          weather: 'mild',
-          image_url: undefined,
-          is_favorite: true,
-          wear_count: 5,
-          last_worn: new Date('2023-12-01'),
-          created_at: new Date('2023-11-15'),
-          updated_at: new Date('2023-12-01'),
-        },
-        {
-          id: '2',
-          user_uid: 'user1',
-          name: 'Weekend Vibes',
-          description: 'Relaxed and stylish',
-          clothing_item_ids: ['item4', 'item5'],
-          tags: ['relaxed', 'weekend'],
-          occasion: 'casual',
-          season: 'summer',
-          weather: 'sunny',
-          image_url: undefined,
-          is_favorite: false,
-          wear_count: 2,
-          last_worn: new Date('2023-11-28'),
-          created_at: new Date('2023-11-20'),
-          updated_at: new Date('2023-11-28'),
-        },
-      ];
-
-      const mockClothingItems: ClothingItem[] = [
-        {
-          id: 'item1',
-          user_uid: 'user1',
-          name: 'Blue Blazer',
-          category: 'outerwear' as any,
-          brand: 'Hugo Boss',
-          size: 'M' as any,
-          colors: [{ name: 'Navy Blue', hex_code: '#000080' }],
-          description: 'Classic navy blazer',
-          image_urls: [],
-          tags: ['formal', 'business'],
-          is_favorite: false,
-          wear_count: 8,
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
-        // Add more mock items as needed
-      ];
-
-      setOutfits(mockOutfits);
-      setClothingItems(mockClothingItems);
+      setOutfits(outfitsData);
+      setClothingItems(itemsData);
     } catch (error) {
       console.error('Error loading outfits:', error);
       Alert.alert('Error', 'Failed to load outfits. Please try again.');
@@ -206,9 +151,6 @@ export const OutfitsScreen: React.FC<OutfitsScreenProps> = ({ navigation }) => {
     });
   };
 
-  const toggleViewMode = () => {
-    setViewMode(prev => prev === 'grid' ? 'list' : 'grid');
-  };
 
   const getItemsForOutfit = (outfit: Outfit): ClothingItem[] => {
     return clothingItems.filter(item => outfit.clothing_item_ids.includes(item.id));
@@ -245,15 +187,6 @@ export const OutfitsScreen: React.FC<OutfitsScreenProps> = ({ navigation }) => {
           onPress={handleFilterPress}
         >
           <Text style={styles.headerButtonText}>🔍</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={toggleViewMode}
-        >
-          <Text style={styles.headerButtonText}>
-            {viewMode === 'grid' ? '📋' : '⊞'}
-          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -300,8 +233,7 @@ export const OutfitsScreen: React.FC<OutfitsScreenProps> = ({ navigation }) => {
         data={outfits}
         renderItem={renderOutfitCard}
         keyExtractor={(item) => item.id}
-        numColumns={viewMode === 'grid' ? 2 : 1}
-        key={viewMode} // Force re-render when view mode changes
+        numColumns={1}
         contentContainerStyle={[
           styles.listContainer,
           outfits.length === 0 && styles.emptyListContainer,

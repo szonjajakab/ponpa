@@ -28,14 +28,14 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
     if (categories) return categories;
 
     const uniqueCategories = Array.from(
-      new Set(items.map(item => item.category))
+      new Set((items || []).map(item => item.category))
     ).sort();
 
     return uniqueCategories;
   }, [items, categories]);
 
   const filteredItems = useMemo(() => {
-    let filtered = items;
+    let filtered = items || [];
 
     // Filter by category
     if (selectedCategory !== 'all') {
@@ -337,13 +337,13 @@ const styles = {
   },
   categoryTabsContent: {
     paddingHorizontal: dimensions.containerPadding.horizontal,
-    paddingVertical: dimensions.spacing.sm,
+    paddingVertical: 6,
   },
   categoryTab: {
-    paddingHorizontal: dimensions.spacing.md,
-    paddingVertical: dimensions.spacing.sm,
-    marginRight: dimensions.spacing.sm,
-    borderRadius: dimensions.borderRadius.lg,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginRight: 6,
+    borderRadius: 6,
     backgroundColor: colors.gray100,
   },
   selectedCategoryTab: {
