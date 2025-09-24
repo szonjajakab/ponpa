@@ -19,6 +19,12 @@ class Settings(BaseSettings):
 
     # Google Generative AI configuration
     google_ai_api_key: Optional[str] = Field(None, alias="GOOGLE_AI_API_KEY")
+    google_ai_model: str = Field("gemini-2.5-flash-image-preview", alias="GOOGLE_AI_MODEL")
+    google_ai_temperature: float = Field(0.7, alias="GOOGLE_AI_TEMPERATURE")
+    google_ai_max_tokens: int = Field(1024, alias="GOOGLE_AI_MAX_TOKENS")
+    google_ai_rate_limit_requests_per_minute: int = Field(60, alias="GOOGLE_AI_RATE_LIMIT_RPM")
+    google_ai_rate_limit_tokens_per_minute: int = Field(10000, alias="GOOGLE_AI_RATE_LIMIT_TPM")
+    google_ai_timeout_seconds: int = Field(30, alias="GOOGLE_AI_TIMEOUT")
 
     # Security
     jwt_algorithm: str = "RS256"

@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from .core.config import get_settings
 from .core.firebase import initialize_firebase
 from .core.logging import setup_logging
-from .api.endpoints import users, wardrobe
+from .api.endpoints import users, wardrobe, tryon
 
 # Setup logging first
 setup_logging()
@@ -58,6 +58,7 @@ app.add_middleware(
 # Include routers
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(wardrobe.router, prefix="/api/v1")
+app.include_router(tryon.router, prefix="/api/v1", tags=["try-on"])
 
 @app.get("/")
 async def root():
