@@ -234,7 +234,7 @@ class TryOnSessionService:
                 return False
 
             doc_ref = db.collection(TryOnSessionService.COLLECTION_NAME).document(session_id)
-            await doc_ref.delete()
+            doc_ref.delete()
 
             logger.info(f"Deleted try-on session {session_id}")
             return True
@@ -263,7 +263,7 @@ class TryOnSessionService:
 
             for doc in docs:
                 try:
-                    await doc.reference.delete()
+                    doc.reference.delete()
                     deleted_count += 1
                 except Exception as e:
                     logger.warning(f"Failed to delete old session {doc.id}: {e}")

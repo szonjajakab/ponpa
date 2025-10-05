@@ -285,7 +285,7 @@ export const TryOnScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
 
-      {mode === 'selection' || mode === 'generation' ? (
+      {mode === 'generation' ? (
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}

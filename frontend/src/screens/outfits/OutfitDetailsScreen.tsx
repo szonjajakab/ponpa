@@ -34,104 +34,19 @@ export const OutfitDetailsScreen: React.FC<OutfitDetailsScreenProps> = ({
     try {
       setIsLoading(true);
 
-      // TODO: Replace with actual API calls
-      // const [outfitResponse, itemsResponse] = await Promise.all([
-      //   outfitService.getOutfit(outfitId),
-      //   outfitService.getOutfitItems(outfitId)
-      // ]);
+      // Get outfit details
+      const outfitResponse = await apiService.getOutfit(outfitId);
 
-      // Mock data for development
-      const mockOutfit: Outfit = {
-        id: outfitId,
-        user_uid: 'user1',
-        name: 'Business Casual',
-        description: 'Perfect for office meetings and professional events. This outfit combines comfort with style.',
-        clothing_item_ids: ['item1', 'item2', 'item3', 'item7'],
-        tags: ['professional', 'comfortable', 'versatile'],
-        occasion: 'work',
-        season: 'fall',
-        weather: 'mild',
-        image_url: undefined,
-        is_favorite: true,
-        wear_count: 5,
-        last_worn: new Date('2023-12-01'),
-        created_at: new Date('2023-11-15'),
-        updated_at: new Date('2023-12-01'),
-      };
+      // Get all clothing items (we'll filter to just the ones in this outfit)
+      const allClothingItems = await apiService.getClothingItems();
 
-      const mockClothingItems: ClothingItem[] = [
-        {
-          id: 'item1',
-          user_uid: 'user1',
-          name: 'Blue Jeans',
-          category: 'bottoms' as any,
-          brand: 'Levi\'s',
-          size: 'M' as any,
-          colors: [{ name: 'Blue', hex_code: '#0000FF' }],
-          description: 'Classic blue jeans',
-          image_urls: [],
-          tags: ['casual', 'everyday'],
-          is_favorite: true,
-          wear_count: 12,
-          last_worn: new Date('2023-12-01'),
-          created_at: new Date('2023-01-15'),
-          updated_at: new Date('2023-12-01'),
-        },
-        {
-          id: 'item2',
-          user_uid: 'user1',
-          name: 'White Button Shirt',
-          category: 'tops' as any,
-          brand: 'Calvin Klein',
-          size: 'M' as any,
-          colors: [{ name: 'White', hex_code: '#FFFFFF' }],
-          description: 'Classic white button-down shirt',
-          image_urls: [],
-          tags: ['formal', 'work', 'versatile'],
-          is_favorite: false,
-          wear_count: 8,
-          last_worn: new Date('2023-11-28'),
-          created_at: new Date('2023-02-10'),
-          updated_at: new Date('2023-11-28'),
-        },
-        {
-          id: 'item3',
-          user_uid: 'user1',
-          name: 'Navy Blazer',
-          category: 'outerwear' as any,
-          brand: 'Hugo Boss',
-          size: 'M' as any,
-          colors: [{ name: 'Navy', hex_code: '#000080' }],
-          description: 'Professional navy blazer',
-          image_urls: [],
-          tags: ['formal', 'business', 'professional'],
-          is_favorite: true,
-          wear_count: 6,
-          last_worn: new Date('2023-11-30'),
-          created_at: new Date('2023-03-01'),
-          updated_at: new Date('2023-11-30'),
-        },
-        {
-          id: 'item7',
-          user_uid: 'user1',
-          name: 'Leather Belt',
-          category: 'accessories' as any,
-          brand: 'Coach',
-          size: 'M' as any,
-          colors: [{ name: 'Brown', hex_code: '#8B4513' }],
-          description: 'Genuine leather belt',
-          image_urls: [],
-          tags: ['formal', 'leather', 'classic'],
-          is_favorite: false,
-          wear_count: 10,
-          last_worn: new Date('2023-11-29'),
-          created_at: new Date('2023-01-30'),
-          updated_at: new Date('2023-11-29'),
-        },
-      ];
+      // Filter to only items in this outfit
+      const outfitClothingItems = allClothingItems.filter(item =>
+        outfitResponse.clothing_item_ids.includes(item.id)
+      );
 
-      setOutfit(mockOutfit);
-      setClothingItems(mockClothingItems);
+      setOutfit(outfitResponse);
+      setClothingItems(outfitClothingItems);
     } catch (error) {
       console.error('Error loading outfit details:', error);
       Alert.alert('Error', 'Failed to load outfit details. Please try again.');
@@ -177,10 +92,11 @@ export const OutfitDetailsScreen: React.FC<OutfitDetailsScreenProps> = ({
     if (!outfit) return;
 
     try {
-      // TODO: Replace with actual API call
-      // await outfitService.updateOutfit(outfit.id, { is_favorite: !outfit.is_favorite });
+      const updatedOutfit = await apiService.updateOutfit(outfit.id, {
+        is_favorite: !outfit.is_favorite
+      });
 
-      setOutfit(prev => prev ? { ...prev, is_favorite: !prev.is_favorite } : null);
+      setOutfit(updatedOutfit);
     } catch (error) {
       console.error('Error updating favorite:', error);
       Alert.alert('Error', 'Failed to update favorite. Please try again.');
@@ -199,15 +115,8 @@ export const OutfitDetailsScreen: React.FC<OutfitDetailsScreenProps> = ({
           text: 'Yes',
           onPress: async () => {
             try {
-              // TODO: Replace with actual API call
-              // await outfitService.markAsWorn(outfit.id);
-
-              setOutfit(prev => prev ? {
-                ...prev,
-                wear_count: prev.wear_count + 1,
-                last_worn: new Date(),
-                updated_at: new Date(),
-              } : null);
+              const updatedOutfit = await apiService.recordOutfitWear(outfit.id);
+              setOutfit(updatedOutfit);
 
               Alert.alert('Success', 'Outfit marked as worn!');
             } catch (error) {
