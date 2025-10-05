@@ -225,6 +225,26 @@ class ClothingItemService:
                     detail="Access denied to this clothing item"
                 )
 
+            # Check if item is used in any outfits
+            outfits_using_item = FirestoreHelper.query_documents(
+                "outfits",
+                filters=[
+                    ("user_uid", "==", user_uid),
+                    ("clothing_item_ids", "array-contains", item_id)
+                ]
+            )
+
+            if outfits_using_item:
+                outfit_names = []
+                for outfit_doc in outfits_using_item:
+                    outfit_names.append(outfit_doc.get('name', 'Unnamed Outfit'))
+
+                outfit_list = ", ".join(outfit_names)
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Cannot delete item - it is used in {len(outfits_using_item)} outfit(s): {outfit_list}. Please remove it from these outfits first."
+                )
+
             # Delete from Firestore
             success = FirestoreHelper.delete_document("clothing_items", item_id)
 

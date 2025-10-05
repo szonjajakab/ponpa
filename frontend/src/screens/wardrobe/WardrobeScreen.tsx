@@ -147,9 +147,21 @@ export const WardrobeScreen: React.FC<WardrobeScreenProps> = ({ navigation }) =>
       await apiService.deleteClothingItem(item.id);
       setItems(prev => prev.filter(i => i.id !== item.id));
       Alert.alert('Success', `"${item.name}" has been deleted.`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting item:', error);
-      Alert.alert('Error', 'Failed to delete item. Please try again.');
+
+      // Handle the case where item is used in outfits
+      if (error.status === 400 && error.details?.detail?.includes('Cannot delete item')) {
+        Alert.alert(
+          'Cannot Delete Item',
+          error.details.detail,
+          [
+            { text: 'OK', style: 'default' }
+          ]
+        );
+      } else {
+        Alert.alert('Error', 'Failed to delete item. Please try again.');
+      }
     }
   };
 
