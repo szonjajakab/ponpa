@@ -5,7 +5,7 @@ import logging
 import asyncio
 import uuid
 
-from app.core.security import get_current_user
+from app.core.security import get_current_user_uid
 from app.services.ai_service import get_ai_service
 from app.services.wardrobe_service import ClothingItemService
 from app.models.outfit import OutfitService
@@ -45,7 +45,7 @@ class TryOnWithImageRequest(BaseModel):
 @router.post("/try-on", response_model=TryOnResponse)
 async def generate_try_on_description(
     request: TryOnRequest,
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Generate AI description for how an outfit would look
@@ -145,7 +145,7 @@ async def generate_try_on_with_image(
     outfit_id: str = Form(...),
     user_context: Optional[str] = Form(None),  # JSON string
     user_image: UploadFile = File(...),
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Generate AI try-on description using user's uploaded image
@@ -252,7 +252,7 @@ async def get_outfit_suggestions(
     outfit_id: str,
     occasion: Optional[str] = None,
     weather: Optional[str] = None,
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Get AI-powered suggestions for improving an outfit
@@ -332,7 +332,7 @@ async def get_outfit_suggestions(
 
 @router.get("/ai-service/status")
 async def get_ai_service_status(
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Get AI service status and usage statistics
@@ -543,7 +543,7 @@ async def generate_try_on_image_task(session_id: str, user_uid: str):
 async def start_try_on_image_generation(
     request: TryOnRequest,
     background_tasks: BackgroundTasks,
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Start async try-on image generation and return session ID for polling
@@ -596,7 +596,7 @@ async def start_try_on_image_generation(
 @router.get("/try-on-status/{session_id}", response_model=TryOnSessionResponse)
 async def get_try_on_status(
     session_id: str,
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Get the status of a try-on image generation session
@@ -645,7 +645,7 @@ async def get_try_on_status(
 @router.get("/my-try-on-sessions")
 async def get_my_try_on_sessions(
     limit: int = 20,
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Get all try-on sessions for the current user
@@ -680,7 +680,7 @@ async def get_my_try_on_sessions(
 @router.delete("/try-on-session/{session_id}")
 async def delete_try_on_session(
     session_id: str,
-    current_user_uid: str = Depends(get_current_user)
+    current_user_uid: str = Depends(get_current_user_uid)
 ):
     """
     Delete a try-on session

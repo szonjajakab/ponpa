@@ -14,6 +14,7 @@ import { CreateOutfitScreen } from '../screens/outfits/CreateOutfitScreen';
 import { EditOutfitScreen } from '../screens/outfits/EditOutfitScreen';
 import { OutfitDetailsScreen } from '../screens/outfits/OutfitDetailsScreen';
 import { OutfitFilterModal } from '../screens/outfits/OutfitFilterModal';
+import { TryOnScreen } from '../screens/TryOnScreen';
 import { MainStackParamList } from '../types';
 
 const Tab = createBottomTabNavigator();
@@ -34,13 +35,6 @@ const HomeScreen = () => (
 const AnalyticsScreen = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
     <Text style={{ fontSize: 24, color: colors.textPrimary }}>Analytics</Text>
-    <Text style={{ fontSize: 16, color: colors.textSecondary, marginTop: 8 }}>Coming Soon</Text>
-  </View>
-);
-
-const TryOnScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text style={{ fontSize: 24, color: colors.textPrimary }}>Try On</Text>
     <Text style={{ fontSize: 16, color: colors.textSecondary, marginTop: 8 }}>Coming Soon</Text>
   </View>
 );

@@ -105,7 +105,7 @@ class TryOnSessionService:
 
             # Save to Firestore
             doc_ref = db.collection(TryOnSessionService.COLLECTION_NAME).document(session.session_id)
-            await doc_ref.set(session.dict())
+            doc_ref.set(session.dict())
 
             logger.info(f"Created try-on session {session.session_id} for user {user_uid}")
             return session
@@ -123,7 +123,7 @@ class TryOnSessionService:
                 return None
 
             doc_ref = db.collection(TryOnSessionService.COLLECTION_NAME).document(session_id)
-            doc = await doc_ref.get()
+            doc = doc_ref.get()
 
             if not doc.exists:
                 return None
@@ -183,7 +183,7 @@ class TryOnSessionService:
             if status == TryOnStatus.IN_PROGRESS and 'started_at' not in update_data:
                 update_data['started_at'] = datetime.utcnow().isoformat()
 
-            await doc_ref.update(update_data)
+            doc_ref.update(update_data)
             logger.info(f"Updated session {session_id} to status {status}")
             return True
 
@@ -201,10 +201,10 @@ class TryOnSessionService:
 
             query = (db.collection(TryOnSessionService.COLLECTION_NAME)
                     .where('user_uid', '==', user_uid)
-                    .order_by('created_at', direction=db.DESCENDING)
+                    .order_by('created_at', direction='DESCENDING')
                     .limit(limit))
 
-            docs = await query.get()
+            docs = query.get()
 
             sessions = []
             for doc in docs:
@@ -258,7 +258,7 @@ class TryOnSessionService:
                     .where('created_at', '<', cutoff_date.isoformat())
                     .where('status', 'in', ['completed', 'failed', 'cancelled']))
 
-            docs = await query.get()
+            docs = query.get()
             deleted_count = 0
 
             for doc in docs:

@@ -70,8 +70,9 @@ export const OutfitsScreen: React.FC<OutfitsScreenProps> = ({ navigation }) => {
 
   const handleDeleteOutfit = async (outfit: Outfit) => {
     try {
-      // TODO: Replace with actual API call
-      // await outfitService.deleteOutfit(outfit.id);
+      console.log('Starting outfit deletion for ID:', outfit.id);
+      await apiService.deleteOutfit(outfit.id);
+      console.log('Outfit deletion successful');
 
       setOutfits(prev => prev.filter(o => o.id !== outfit.id));
       Alert.alert('Success', 'Outfit deleted successfully.');

@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { OutfitStackParamList, Outfit, ClothingItem } from '../../types';
 import { OutfitPreview } from '../../components/outfits/OutfitPreview';
 import { ItemCard } from '../../components/wardrobe/ItemCard';
+import { apiService } from '../../services/api';
 import { colors } from '../../constants/colors';
 import { dimensions } from '../../constants/dimensions';
 
@@ -155,8 +156,9 @@ export const OutfitDetailsScreen: React.FC<OutfitDetailsScreenProps> = ({
           style: 'destructive',
           onPress: async () => {
             try {
-              // TODO: Replace with actual API call
-              // await outfitService.deleteOutfit(outfitId);
+              console.log('Starting outfit deletion for ID:', outfitId);
+              await apiService.deleteOutfit(outfitId);
+              console.log('Outfit deletion successful');
 
               Alert.alert('Success', 'Outfit deleted successfully.', [
                 { text: 'OK', onPress: () => navigation.goBack() }

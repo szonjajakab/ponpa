@@ -75,7 +75,7 @@ class OutfitService:
 
             # Save to Firestore
             doc_ref = db.collection(OutfitService.COLLECTION_NAME).document(outfit_id)
-            await doc_ref.set(outfit.dict())
+            doc_ref.set(outfit.dict())
 
             logger.info(f"Created outfit {outfit_id} for user {user_uid}")
             return outfit
@@ -93,7 +93,7 @@ class OutfitService:
                 return None
 
             doc_ref = db.collection(OutfitService.COLLECTION_NAME).document(outfit_id)
-            doc = await doc_ref.get()
+            doc = doc_ref.get()
 
             if not doc.exists:
                 return None
@@ -120,10 +120,10 @@ class OutfitService:
 
             query = (db.collection(OutfitService.COLLECTION_NAME)
                     .where('user_uid', '==', user_uid)
-                    .order_by('updated_at', direction=db.DESCENDING)
+                    .order_by('updated_at', direction='DESCENDING')
                     .limit(limit))
 
-            docs = await query.get()
+            docs = query.get()
 
             outfits = []
             for doc in docs:
@@ -162,7 +162,7 @@ class OutfitService:
 
             update_data['updated_at'] = datetime.utcnow()
 
-            await doc_ref.update(update_data)
+            doc_ref.update(update_data)
 
             # Return updated outfit
             return await OutfitService.get_outfit(user_uid, outfit_id)
@@ -214,7 +214,7 @@ class OutfitService:
                 'updated_at': datetime.utcnow()
             }
 
-            await doc_ref.update(update_data)
+            doc_ref.update(update_data)
 
             return await OutfitService.get_outfit(user_uid, outfit_id)
 
