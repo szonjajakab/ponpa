@@ -45,8 +45,15 @@ class Settings(BaseSettings):
     @field_validator("firebase_service_account_path")
     @classmethod
     def validate_firebase_service_account(cls, v):
+        import os
         if v and not os.path.exists(v):
-            raise ValueError(f"Firebase service account file not found: {v}")
+            # In production (Cloud Run), we use Application Default Credentials
+            # Only raise error if we're not in a production environment
+            if os.getenv("ENVIRONMENT") != "production":
+                raise ValueError(f"Firebase service account file not found: {v}")
+            else:
+                import logging
+                logging.warning(f"Service account file not found: {v} - Using Application Default Credentials")
         return v
 
     @field_validator("google_ai_api_key")
